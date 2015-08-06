@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-import json, logging, pprint, re
+import json, logging, os, pprint, re
 import requests
 
 
@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 class PatronAPI( object ):
     """ Grabs & parses patron-api output. """
+
+    def __init__( self ):
+        self.url_pattern = unicode( os.environ['PAPI__PATRON_API_URL_PATTERN'], 'utf-8' )
 
     def grab_data( self, barcode ):
         """ Grabs and parses patron-api html. """
@@ -22,26 +25,37 @@ class PatronAPI( object ):
     def grab_raw_data( self, barcode ):
         """ Makes http request.
             Called by grab_data() """
-        temp_data = """
-            <HTML><BODY>
-            PATRN NAME[pn]=Demolast, Demofirst<BR>
-            P BARCODE[pb]=1 2222 33333 4444<BR>
-            </BODY></HTML>
-            """.strip()
-        return temp_data
+        url = self.url_pattern.replace( 'BARCODE', barcode )
+        logger.debug( 'url, `%s`' % url )
+        r = requests.get( url )
+        html = r.text
+        logger.debug( 'html, ```%s```' % html )
+        return html
+
+    # def grab_raw_data( self, barcode ):
+    #     """ Makes http request.
+    #         Called by grab_data() """
+    #     temp_data = """
+    #         <HTML><BODY>
+    #         PATRN NAME[pn]=Demolast, Demofirst<BR>
+    #         P BARCODE[pb]=1 2222 33333 4444<BR>
+    #         </BODY></HTML>
+    #         """.strip()
+    #     return temp_data
 
     def parse_data( self, html ):
         """ Converts html to dct.
             Called by grab_data() """
-        logger.debug( 'html, `%s`' % html )
         lines = html.split( '\n' )
-        logger.debug( 'lines, `%s`' % pprint.pformat(lines) )
         trimmed_lines = self.trim_lines( lines )
-        d = {}
+        dct = {}
         for line in trimmed_lines:
-            ( key, value ) = self.parse_line( line )
-            d[key] = value
-        return d
+            value_dct = self.parse_line( line )
+            key = value_dct['label'].lower().replace( ' ', '_' )
+            dct[key] = value_dct
+        return_dct = self.add_conversions( dct )
+        logger.debug( 'return_dct, `%s`' % pprint.pformat(return_dct) )
+        return dct
 
     def trim_lines( self, lines ):
         """ Trims and slices lines.
@@ -56,15 +70,60 @@ class PatronAPI( object ):
     def parse_line( self, line ):
         """ Parses line into key and dct-value.
             Called by parse_data() """
+        label = self.parse_label( line )
+        updated_line = line[ len(label): ]
+        logger.debug( 'updated_line, `%s`' % updated_line )
+        ( code, sliced_code ) = self.parse_code( updated_line )
+        updated_line = updated_line[ len(code): ]
+        logger.debug( 'updated_line2, `%s`' % updated_line )
+        value = self.parse_value( updated_line )
+        dct = { 'label': label, 'code': sliced_code, 'value': value }
+        logger.debug( 'dct, `%s`' % pprint.pformat(dct) )
+        return dct
+
+    def parse_label( self, line ):
+        """ Parses and returns label.
+            Called by parse_line() """
         regex_pattern = """
-            Aa        # label
+            [A-Z]*        # label text
+            \s            # space
+            [A-Z]*        # label text
             """
-        search_result = re.search( regex_pattern, line, re.VERBOSE )
-        logger.debug( 'search_result, `%s`' % search_result )
-        return search_result
+        label_result = re.search( regex_pattern, line, re.VERBOSE )
+        label = label_result.group()
+        logger.debug( 'label, `%s`' % label )
+        return label
 
+    def parse_code( self, updated_line ):
+        """ Parses and returns code.
+            Called by parse_line() """
+        regex_pattern = """
+            (\[p)         # start
+            [a-z0-9]*     # code
+            (\])          # end
+            """
+        code_result = re.search( regex_pattern, updated_line, re.VERBOSE )
+        code = code_result.group()
+        sliced_code = code[1: -1]
+        logger.debug( 'code, `%s`; sliced_code, `%s`' % (code, sliced_code) )
+        return ( code, sliced_code )
 
+    def parse_value( self, updated_line ):
+        """ Parses and returns value.
+            Called by parse_line() """
+        start = len( '=' )
+        end = len( '<BR>' )
+        value = updated_line[ start: -end ]
+        logger.debug( 'value, `%s`' % value )
+        return value
 
-
+    def add_conversions( self, dct ):
+        """ Enhances barcode data.
+            Called by parse_line() """
+        start = dct['p_barcode']['value']
+        converted_value = start.replace( ' ', '' )
+        dct['p_barcode']['converted_value'] = converted_value
+        logger.debug( 'dct after conversions, `%s`' % pprint.pformat(dct) )
+        return dct
 
     # end class PatronAPI

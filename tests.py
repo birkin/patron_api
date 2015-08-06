@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 import json, logging, os, unittest
 from patron_api import PatronAPI
 
 
 ## logging
-LOG_PATH = os.environ['PAPI__LOG_PATH']
+LOG_PATH = unicode( os.environ['PAPI__LOG_PATH'], 'utf-8' )
 logging.basicConfig(
     filename=LOG_PATH, level=logging.DEBUG,
     format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
@@ -19,7 +20,7 @@ logger.debug( 'log setup' )
 class PatronApiTests( unittest.TestCase ):
 
     def setUp(self):
-        self.PATRON_BARCODE = os.environ['PAPI__TEST_PATRON_BARCODE']
+        self.PATRON_BARCODE = unicode( os.environ['PAPI__TEST_PATRON_BARCODE'], 'utf-8' )
 
     def test_barcode(self):
         """ Tests response is json of hashes. """
@@ -29,7 +30,7 @@ class PatronApiTests( unittest.TestCase ):
         d = json.loads( output )
         self.assertEqual(
             self.PATRON_BARCODE,
-            d['patron_barcode']['converted_value']
+            d['p_barcode']['converted_value']
             )
 
 
