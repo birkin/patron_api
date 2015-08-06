@@ -85,9 +85,9 @@ class PatronAPI( object ):
         """ Parses and returns label.
             Called by parse_line() """
         regex_pattern = """
-            [A-Z]*        # label text
-            \s            # space
-            [A-Z]*        # label text
+            [A-Z0-9]*     # label text
+            \s*           # space
+            [A-Z0-9]*     # label text
             """
         label_result = re.search( regex_pattern, line, re.VERBOSE )
         label = label_result.group()
@@ -99,7 +99,7 @@ class PatronAPI( object ):
             Called by parse_line() """
         regex_pattern = """
             (\[p)         # start
-            [a-z0-9\!]*     # code
+            [a-z0-9\!]*   # code
             (\])          # end
             """
         code_result = re.search( regex_pattern, updated_line, re.VERBOSE )

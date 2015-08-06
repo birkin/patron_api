@@ -33,6 +33,21 @@ class PatronApiTests( unittest.TestCase ):
             d['p_barcode']['converted_value']
             )
 
+    def test_parse_label(self):
+        """ Tests regex perception of number in label. """
+        ## all text
+        line = 'P TYPE[p47]=7<BR>'
+        self.assertEqual(
+            'P TYPE',
+            self.papi.parse_label( line )
+            )
+        ## numeral
+        line = 'PCODE1[p44]=-<BR>'
+        self.assertEqual(
+            'PCODE1',
+            self.papi.parse_label( line )
+            )
+
     def test_parse_code(self):
         """ Tests regex perception of exclamation point. """
         updated_line = '[p!]=p<BR>'
@@ -40,6 +55,8 @@ class PatronApiTests( unittest.TestCase ):
             ( '[p!]', 'p!' ),  # ( sliced_code, code )
             self.papi.parse_code( updated_line )
             )
+
+
 
 
 if __name__ == '__main__':
