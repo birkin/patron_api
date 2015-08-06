@@ -99,7 +99,7 @@ class PatronAPI( object ):
             Called by parse_line() """
         regex_pattern = """
             (\[p)         # start
-            [a-z0-9]*     # code
+            [a-z0-9\!]*     # code
             (\])          # end
             """
         code_result = re.search( regex_pattern, updated_line, re.VERBOSE )

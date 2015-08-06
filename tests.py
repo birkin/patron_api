@@ -21,16 +21,24 @@ class PatronApiTests( unittest.TestCase ):
 
     def setUp(self):
         self.PATRON_BARCODE = unicode( os.environ['PAPI__TEST_PATRON_BARCODE'], 'utf-8' )
+        self.papi = PatronAPI()
 
-    def test_barcode(self):
+    def test_grab_data(self):
         """ Tests response is json of hashes. """
-        papi = PatronAPI()
-        output = papi.grab_data( self.PATRON_BARCODE )
+        output = self.papi.grab_data( self.PATRON_BARCODE )
         logger.debug( 'output, `%s`' % output )
         d = json.loads( output )
         self.assertEqual(
             self.PATRON_BARCODE,
             d['p_barcode']['converted_value']
+            )
+
+    def test_parse_code(self):
+        """ Tests regex perception of exclamation point. """
+        updated_line = '[p!]=p<BR>'
+        self.assertEqual(
+            ( '[p!]', 'p!' ),  # ( sliced_code, code )
+            self.papi.parse_code( updated_line )
             )
 
 
