@@ -24,7 +24,8 @@ class PatronApiTests( unittest.TestCase ):
         self.papi = PatronAPI()
 
     def test_grab_data(self):
-        """ Tests response is json of hashes. """
+        """ Tests response is json of hashes.
+            May not be able to run this test locally due to port/ip filters. """
         output = self.papi.grab_data( self.PATRON_BARCODE )
         logger.debug( 'output, `%s`' % output )
         d = json.loads( output )
