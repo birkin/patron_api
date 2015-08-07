@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import json, logging, os, unittest
-from patron_api import PatronAPI
+from p_api import PatronAPI
 
 
 ## logging
