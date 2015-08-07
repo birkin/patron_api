@@ -21,11 +21,11 @@ P BARCODE[pb]=1 2222 33333 4444<BR>
 
 ```
 {
-    "patron_name": {
+    "patrn_name": {
         "label": "PATRN NAME",
         "code": "pn",
         "value": "Demolast, Demofirst" },
-    "patron_barcode": {
+    "p_barcode": {
         "label": "P BARCODE",
         "code": "pb",
         "value": "1 2222 33333 4444",
