@@ -50,7 +50,7 @@ class PatronAPI( object ):
         """ Trims and slices lines.
             Called by parse_data() """
         trimmed_lines = []
-        sliced_lines = lines[1:-1]
+        sliced_lines = lines[1:-2]
         for line in sliced_lines:
             trimmed_lines.append( line.strip() )
         logger.debug( 'trimmed_lines, `%s`' % pprint.pformat(trimmed_lines) )
