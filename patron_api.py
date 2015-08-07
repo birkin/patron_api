@@ -32,17 +32,6 @@ class PatronAPI( object ):
         logger.debug( 'html, ```%s```' % html )
         return html
 
-    # def grab_raw_data( self, barcode ):
-    #     """ Makes http request.
-    #         Called by grab_data() """
-    #     temp_data = """
-    #         <HTML><BODY>
-    #         PATRN NAME[pn]=Demolast, Demofirst<BR>
-    #         P BARCODE[pb]=1 2222 33333 4444<BR>
-    #         </BODY></HTML>
-    #         """.strip()
-    #     return temp_data
-
     def parse_data( self, html ):
         """ Converts html to dct.
             Called by grab_data() """
@@ -87,6 +76,7 @@ class PatronAPI( object ):
         regex_pattern = """
             [A-Z0-9]*     # label text
             \s*           # space
+            \-*           # hyphen
             [A-Z0-9]*     # label text
             """
         label_result = re.search( regex_pattern, line, re.VERBOSE )

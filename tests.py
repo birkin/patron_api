@@ -35,7 +35,7 @@ class PatronApiTests( unittest.TestCase ):
 
     def test_parse_label(self):
         """ Tests regex perception of number in label. """
-        ## all text
+        ## text with space
         line = 'P TYPE[p47]=7<BR>'
         self.assertEqual(
             'P TYPE',
@@ -45,6 +45,12 @@ class PatronApiTests( unittest.TestCase ):
         line = 'PCODE1[p44]=-<BR>'
         self.assertEqual(
             'PCODE1',
+            self.papi.parse_label( line )
+            )
+        ## text with hyphen
+        line = 'E-MAIL[pe]=First_Last@brown.edu<BR>'
+        self.assertEqual(
+            'E-MAIL',
             self.papi.parse_label( line )
             )
 
