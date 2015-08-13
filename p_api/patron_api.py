@@ -85,37 +85,18 @@ class PatronAPI( object ):
         logger.debug( 'label, `%s`' % label )
         return label
 
-    # def parse_code( self, updated_line ):
-    #     """ Parses and returns code.
-    #         Example: in updated_line `[pn]=Demolast, Demofirst<BR>`, returns ('[pn]', pn').
-    #         Called by parse_line() """
-    #     regex_pattern = """
-    #         (\[p)         # start
-    #         [a-z0-9\!]*   # code
-    #         (\])          # end
-    #         """
-    #     code_result = re.search( regex_pattern, updated_line, re.VERBOSE )
-    #     code = code_result.group()
-    #     sliced_code = code[1: -1]
-    #     logger.debug( 'code, `%s`; sliced_code, `%s`' % (code, sliced_code) )
-    #     return ( code, sliced_code )
-
     def parse_code( self, updated_line ):
         """ Parses and returns code.
             Example: in updated_line `[pn]=Demolast, Demofirst<BR>`, returns ('[pn]', pn').
             Called by parse_line() """
         regex_pattern = """
-            (\[p)         # start
-            [a-z0-9\!]*   # code
-            (\])          # end
+            (\[p)           # start
+            [a-z0-9\!\^]*   # code
+            (\])            # end
             """
         code_result = re.search( regex_pattern, updated_line, re.VERBOSE )
-        if code_result is None:
-            logger.debug( 'no code parsed for updated_line, `%s`' % updated_line )
-            ( code, sliced_code ) = ( '', '' )
-        else:
-            code = code_result.group()
-            sliced_code = code[1: -1]
+        code = code_result.group()
+        sliced_code = code[1: -1]
         logger.debug( 'code, `%s`; sliced_code, `%s`' % (code, sliced_code) )
         return ( code, sliced_code )
 

@@ -34,6 +34,20 @@ class PatronApiTests( unittest.TestCase ):
             d['p_barcode']['converted_value']
             )
 
+    def test_parse_line(self):
+        """ Tests that dict is returned for line. """
+        line = 'P TYPE[p47]=7<BR>'
+        self.assertEqual(
+            { u'label': u'P TYPE', u'code': u'p47', u'value': u'7' },
+            self.papi.parse_line( line )
+            )
+        ## problem line
+        line = 'LINK REC[p^]=in<BR>'
+        self.assertEqual(
+            { u'label': u'LINK REC', u'code': u'p^', u'value': u'in' },
+            self.papi.parse_line( line )
+            )
+
     def test_parse_label(self):
         """ Tests regex perception of number in label. """
         ## text with space
@@ -56,10 +70,17 @@ class PatronApiTests( unittest.TestCase ):
             )
 
     def test_parse_code(self):
-        """ Tests regex perception of exclamation point. """
+        """ Tests code extract from updated_line. """
+        ## exclamation point
         updated_line = '[p!]=p<BR>'
         self.assertEqual(
             ( '[p!]', 'p!' ),  # ( sliced_code, code )
+            self.papi.parse_code( updated_line )
+            )
+        ## caret
+        updated_line = '[p^]=in<BR>'
+        self.assertEqual(
+            ( '[p^]', 'p^' ),  # ( sliced_code, code )
             self.papi.parse_code( updated_line )
             )
 
