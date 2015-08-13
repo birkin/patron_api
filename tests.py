@@ -63,6 +63,13 @@ class PatronApiTests( unittest.TestCase ):
             self.papi.parse_code( updated_line )
             )
 
+    def test_parse_value(self):
+        """ Tests simple slice for value. """
+        updated_line = '=First_Last@brown.edu<BR>'
+        self.assertEqual(
+            'First_Last@brown.edu',
+            self.papi.parse_value( updated_line )
+            )
 
 
 
