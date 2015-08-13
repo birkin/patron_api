@@ -111,7 +111,7 @@ class PatronAPI( object ):
             """
         code_result = re.search( regex_pattern, updated_line, re.VERBOSE )
         if code_result is None:
-            log.debug( 'no code parsed for updated_line, `%s`' % updated_line )
+            logger.debug( 'no code parsed for updated_line, `%s`' % updated_line )
             ( code, sliced_code ) = ( '', '' )
         else:
             code = code_result.group()
