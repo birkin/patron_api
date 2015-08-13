@@ -72,6 +72,7 @@ class PatronAPI( object ):
 
     def parse_label( self, line ):
         """ Parses and returns label.
+            Example: in line `PATRN NAME[pn]=Demolast, Demofirst<BR>`, returns 'PATRN NAME'.
             Called by parse_line() """
         regex_pattern = """
             [A-Z0-9]*     # label text
@@ -86,6 +87,7 @@ class PatronAPI( object ):
 
     def parse_code( self, updated_line ):
         """ Parses and returns code.
+            Example: in line `PATRN NAME[pn]=Demolast, Demofirst<BR>`, returns 'pn'.
             Called by parse_line() """
         regex_pattern = """
             (\[p)         # start
@@ -100,6 +102,7 @@ class PatronAPI( object ):
 
     def parse_value( self, updated_line ):
         """ Parses and returns value.
+            Example: in line `PATRN NAME[pn]=Demolast, Demofirst<BR>`, returns 'Demolast, Demofirst'.
             Called by parse_line() """
         start = len( '=' )
         end = len( '<BR>' )

@@ -8,5 +8,5 @@ from setuptools import setup, find_packages
 setup(name='patron-api',
     version='0.1-dev',
     packages=find_packages(),
-    install_requires=[ u'requests' ],
+    install_requires=[ 'requests' ],
 )
