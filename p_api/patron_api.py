@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 class PatronAPI( object ):
     """ Grabs & parses patron-api output. """
 
-    def __init__( self ):
-        self.url_pattern = unicode( os.environ['PAPI__PATRON_API_URL_PATTERN'], 'utf-8' )
+    def __init__( self, defaults ):
+        self.url_pattern = defaults['PATRON_API_URL_PATTERN']
 
     def grab_data( self, barcode ):
         """ Grabs and parses patron-api html. """

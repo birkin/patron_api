@@ -20,8 +20,9 @@ logger.debug( 'log setup' )
 class PatronApiTests( unittest.TestCase ):
 
     def setUp(self):
-        self.PATRON_BARCODE = unicode( os.environ['PAPI__TEST_PATRON_BARCODE'], 'utf-8' )
-        self.papi = PatronAPI()
+        self.PATRON_BARCODE = unicode( os.environ['PAPI__TEST_PATRON_BARCODE'] )
+        defaults = { 'PATRON_API_URL_PATTERN': unicode(os.environ['PAPI__PATRON_API_URL_PATTERN']) }
+        self.papi = PatronAPI( defaults )
 
     def test_grab_data(self):
         """ Tests response is json of hashes.
