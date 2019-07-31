@@ -6,7 +6,7 @@ import json, logging, os, pprint, re
 import requests
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class PatronAPI( object ):
@@ -26,10 +26,10 @@ class PatronAPI( object ):
         """ Makes http request.
             Called by grab_data() """
         url = self.url_pattern.replace( 'BARCODE', barcode )
-        logger.debug( 'url, `%s`' % url )
+        log.debug( 'url, `%s`' % url )
         r = requests.get( url )
         html = r.text
-        logger.debug( 'html, ```%s```' % html )
+        log.debug( 'html, ```%s```' % html )
         return html
 
     def parse_data( self, html ):
@@ -43,7 +43,7 @@ class PatronAPI( object ):
             key = value_dct['label'].lower().replace( ' ', '_' )
             dct[key] = value_dct
         return_dct = self.add_conversions( dct )
-        logger.debug( 'return_dct, `%s`' % pprint.pformat(return_dct) )
+        log.debug( 'return_dct, `%s`' % pprint.pformat(return_dct) )
         return dct
 
     def trim_lines( self, lines ):
@@ -53,7 +53,7 @@ class PatronAPI( object ):
         sliced_lines = lines[1:-2]
         for line in sliced_lines:
             trimmed_lines.append( line.strip() )
-        logger.debug( 'trimmed_lines, `%s`' % pprint.pformat(trimmed_lines) )
+        log.debug( 'trimmed_lines, `%s`' % pprint.pformat(trimmed_lines) )
         return trimmed_lines
 
     def parse_line( self, line ):
@@ -61,13 +61,13 @@ class PatronAPI( object ):
             Called by parse_data() """
         label = self.parse_label( line )
         updated_line = line[ len(label): ]
-        logger.debug( 'updated_line, `%s`' % updated_line )
+        log.debug( 'updated_line, `%s`' % updated_line )
         ( code, sliced_code ) = self.parse_code( updated_line )
         updated_line = updated_line[ len(code): ]
-        logger.debug( 'updated_line2, `%s`' % updated_line )
+        log.debug( 'updated_line2, `%s`' % updated_line )
         value = self.parse_value( updated_line )
         dct = { 'label': label, 'code': sliced_code, 'value': value }
-        logger.debug( 'dct, `%s`' % pprint.pformat(dct) )
+        log.debug( 'dct, `%s`' % pprint.pformat(dct) )
         return dct
 
     def parse_label( self, line ):
@@ -82,7 +82,7 @@ class PatronAPI( object ):
             """
         label_result = re.search( regex_pattern, line, re.VERBOSE )
         label = label_result.group()
-        logger.debug( 'label, `%s`' % label )
+        log.debug( 'label, `%s`' % label )
         return label
 
     def parse_code( self, updated_line ):
@@ -97,7 +97,7 @@ class PatronAPI( object ):
         code_result = re.search( regex_pattern, updated_line, re.VERBOSE )
         code = code_result.group()
         sliced_code = code[1: -1]
-        logger.debug( 'code, `%s`; sliced_code, `%s`' % (code, sliced_code) )
+        log.debug( 'code, `%s`; sliced_code, `%s`' % (code, sliced_code) )
         return ( code, sliced_code )
 
     def parse_value( self, updated_line ):
@@ -107,7 +107,7 @@ class PatronAPI( object ):
         start = len( '=' )
         end = len( '<BR>' )
         value = updated_line[ start: -end ]
-        logger.debug( 'value, `%s`' % value )
+        log.debug( 'value, `%s`' % value )
         return value
 
     def add_conversions( self, dct ):
@@ -116,7 +116,7 @@ class PatronAPI( object ):
         start = dct['p_barcode']['value']
         converted_value = start.replace( ' ', '' )
         dct['p_barcode']['converted_value'] = converted_value
-        logger.debug( 'dct after conversions, `%s`' % pprint.pformat(dct) )
+        log.debug( 'dct after conversions, `%s`' % pprint.pformat(dct) )
         return dct
 
     # end class PatronAPI

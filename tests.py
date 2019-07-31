@@ -13,8 +13,8 @@ logging.basicConfig(
     format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
     datefmt='%d/%b/%Y %H:%M:%S'
     )
-logger = logging.getLogger(__name__)
-logger.debug( 'log setup' )
+log = logging.getLogger(__name__)
+log.debug( 'log setup' )
 
 
 class PatronApiTests( unittest.TestCase ):
@@ -28,7 +28,7 @@ class PatronApiTests( unittest.TestCase ):
         """ Tests response is json of hashes.
             May not be able to run this test locally due to port/ip filters. """
         output = self.papi.grab_data( self.PATRON_BARCODE )
-        logger.debug( 'output, `%s`' % output )
+        log.debug( 'output, `%s`' % output )
         d = json.loads( output )
         self.assertEqual(
             self.PATRON_BARCODE,
